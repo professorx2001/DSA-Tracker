@@ -1,0 +1,29 @@
+{
+  "name": "dsa-tracker",
+  "version": "1.0.0",
+  "description": "A backend allowing users to log their solved DSA problems from various platforms.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "keywords": [
+    "backend",
+    "dsa-tracker"
+  ],
+  "author": "Md Zaki Hussain",
+  "license": "ISC",
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "mongoose": "^8.12.1",
+    "moongoose": "^0.0.1"
+  },
+  "devDependencies": {
+    "dotenv": "^16.4.7",
+    "nodemon": "^3.1.9",
+    "prettier": "^3.5.3"
+  }
+}
