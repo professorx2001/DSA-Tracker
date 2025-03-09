@@ -9,7 +9,8 @@ const platformSchema = new mongoose.Schema(
     },
     name: { 
         type: String, 
-        required: true 
+        required: true, 
+        trim : true
     },
     totalSolved: { 
         type: Number, 
@@ -27,7 +28,7 @@ const platformSchema = new mongoose.Schema(
     },
     rating: {
       type: Number,
-      required: true,
+      required: false,
     },
   },
   { timestamps: true }

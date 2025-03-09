@@ -6,18 +6,24 @@ import jwt from "jsonwebtoken";
 const userSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true
+        required: true,
+        trim : true,
     },
     username: {
         //by default I will take Leetcode username
         type: String,
         unique: true,
-        required : true
+        required : true,
+        trim : true,
+        lowercase : true
+
     },
     email: {
         type: String,
         unique: true,
-        required: true
+        required: true,
+        lowercase: true,
+        trim: true
     },
     password: {
         type: String,
@@ -30,7 +36,10 @@ const userSchema = new mongoose.Schema({
     },
     profilePic: {
         type: String,
-        default: ""
+        // default: ""
+    },
+    refreshToken : {
+        type : String
     },
     platforms : [
         {
@@ -58,12 +67,12 @@ userSchema.methods.generateAccessToken = async function(){
         email: this.email,
         username: this.username,
         role: this.role
-    }, process.env.JWT_ACCESS_SECRET, {expiresIn: "1d"});
+    }, process.env.JWT_ACCESS_SECRET, {expiresIn: process.env.ACCESS_TOKEN_EXPIRY});
 }   
 userSchema.methods.generateRefreshToken = async function(){
     return jwt.sign({
         userId: this._id,
-    }, process.env.JWT_REFRESH_SECRET, {expiresIn: "7d"});
+    }, process.env.JWT_REFRESH_SECRET, {expiresIn: process.env.REFRESH_TOKEN_EXPIRY});
 }   
 
 const User = mongoose.model("User", userSchema);
