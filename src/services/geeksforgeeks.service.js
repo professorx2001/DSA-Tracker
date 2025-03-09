@@ -8,16 +8,22 @@ const fetchGeeksForGeeksData = async (username) => {
   const geeksforgeeksPractice_URl = `https://www.geeksforgeeks.org/user/${username}`;
   try {
     const response = await axios.get(geeksforgeeksPractice_URl);
-    
+
     const $ = cheerio.load(response.data);
 
-
-    const rank = $(
+    const instituteRank = $(
       ".educationDetails_head_left_userRankContainer--text__wt81s b"
     )
       .text()
       .trim()
       .replace("Rank", "");
+
+    const contestRating = $(".scoreCard_head__nxXR8")
+      .find('.scoreCard_head_left--text__KZ2S1:contains("Contest Rating")')
+      .siblings(".scoreCard_head_left--score__oSi_x")
+      .text()
+      .trim();
+
     const easy = $('.problemNavbar_head_nav--text__UaGCx:contains("EASY")')
       .text()
       .match(/\d+/)[0];
@@ -29,32 +35,16 @@ const fetchGeeksForGeeksData = async (username) => {
       .match(/\d+/)[0];
     const total = String(parseInt(easy) + parseInt(medium) + parseInt(hard));
 
-    //Structuring the data similar to leetcode so that it can be used in the similarly.
     const data = {
       username,
-      rank,
-      submitStats: {
-        acSubmissionNum: [
-          {
-            difficulty: "All",
-            count: total,
-          },
-          {
-            difficulty: "Easy",
-            count: easy,
-          },
-          {
-            difficulty: "Medium",
-            count: medium,
-          },
-          {
-            difficulty: "Hard",
-            count: hard,
-          },
-        ],
-      },
+      rank: instituteRank || "Not Ranked",
+      contestRating: contestRating || "Not Rated",
+      total: total,
+      easy: easy || "0",
+      medium: medium || "0",
+      hard: hard || "0",
     };
-    console.log(data.submitStats.acSubmissionNum)
+    console.log(data);
     return data;
   } catch (error) {
     console.error("Error fetching GeeksForGeeks data:", error.message);
