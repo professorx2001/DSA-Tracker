@@ -21,7 +21,6 @@ const platformSchema = new mongoose.Schema(
         medium: { type: Number, default: 0 },
         hard: { type: Number, default: 0 },
     },
-    topics: [String],
     url: {
       type: String,
       required: true,
