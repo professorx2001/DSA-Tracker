@@ -12,6 +12,11 @@ const platformSchema = new mongoose.Schema(
         required: true, 
         trim : true
     },
+    username: {
+        type: String,
+        required: true,
+        trim : true
+    },
     totalSolved: { 
         type: Number, 
         default: 0 
@@ -21,16 +26,12 @@ const platformSchema = new mongoose.Schema(
         medium: { type: Number, default: 0 },
         hard: { type: Number, default: 0 },
     },
-    url: {
-      type: String,
-      required: true,
-    },
     rating: {
       type: Number,
-      required: false,
     },
   },
   { timestamps: true }
 );
 
-export const Platform = mongoose.model("Platform", platformSchema);
+const Platform = mongoose.model("Platform", platformSchema);
+export default Platform;
