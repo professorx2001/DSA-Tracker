@@ -52,6 +52,7 @@ const generateAccessTokenAndRefreshToken = async (userId) => {
   }
 };
 
+//Register the user
 const registerUser = asyncHandler(async (req, res) => {
   const { leetcodeUsername, email, password, codeforcesusername, gfgusername } = req.body;
 
@@ -125,6 +126,7 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 });
 
+//Login the user
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   validateData({ email, password });
@@ -176,6 +178,7 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 });
 
+//Get the user data
 const getProfile = asyncHandler(async (req, res) => {
   const userId = req.user._id;
   try {
@@ -194,6 +197,7 @@ const getProfile = asyncHandler(async (req, res) => {
   }
 });
 
+//Hit a refresh button to update the data manually
 const refreshDataAndUpdateDB = asyncHandler(async (req, res) => {
   const userId = req.user._id;
   const user = await User.findById(userId);
@@ -203,13 +207,13 @@ const refreshDataAndUpdateDB = asyncHandler(async (req, res) => {
   }
   const platforms = user.platforms;
 
-  // ✅ Refreshing LeetCode data
+  // Refreshing LeetCode data
   const { username, contestRanking, total, easy, medium, hard } = await fetchLeetCodeData(user.username);
 
   let leetcode = platforms.find((platform) => platform.name === "LeetCode");
 
   if (!leetcode) {
-    // If LeetCode is not found, create it (shouldn't happen as per your logic)
+
     leetcode = { name: "Leetcode", username, rating: contestRanking, totalSolved: total, problems: { easy, medium, hard } };
     platforms.push(leetcode);
   } else {
@@ -222,7 +226,6 @@ const refreshDataAndUpdateDB = asyncHandler(async (req, res) => {
     leetcode.problems.hard = hard;
   }
 
-  // ✅ Refreshing GeeksForGeeks data (if available)
   if (user.gfgusername && user.gfgusername !== "") {
     const { username: gfgusername, rank, contestRating, total, easy, medium, hard } = await fetchGeeksForGeeksData(user.gfgusername);
     
@@ -249,10 +252,12 @@ const refreshDataAndUpdateDB = asyncHandler(async (req, res) => {
     }
   }
 
-  await user.save(); // Save updated user document
+  await user.save();
 
   return res.status(200).json(new ApiResponse(200, user.platforms, "Platform data updated successfully"));
 });
+
+
 
 
 export { registerUser, loginUser, getProfile, refreshDataAndUpdateDB };
