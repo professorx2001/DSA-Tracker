@@ -40,8 +40,7 @@ const fetchLeetCodeData = async (username) => {
       medium: response.data.data.matchedUser.submitStats.acSubmissionNum[2].count || "0",
       hard: response.data.data.matchedUser.submitStats.acSubmissionNum[3].count || "0",
     };
-
-    console.log(data);
+    // console.log(data);
     return data;
   } catch (error) {
     console.error("Error fetching LeetCode data:", error.message);

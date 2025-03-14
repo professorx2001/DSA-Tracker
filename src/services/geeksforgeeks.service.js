@@ -38,13 +38,13 @@ const fetchGeeksForGeeksData = async (username) => {
     const data = {
       username,
       rank: instituteRank || "Not Ranked",
-      contestRating: contestRating || "Not Rated",
+      contestRating: isNaN(Number(contestRating)) ? 0 : Number(contestRating),
       total: total,
       easy: easy || "0",
       medium: medium || "0",
       hard: hard || "0",
     };
-    console.log(data);
+    // console.log(data);
     return data;
   } catch (error) {
     console.error("Error fetching GeeksForGeeks data:", error.message);

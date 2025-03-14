@@ -1,5 +1,5 @@
 import axios from "axios";
-import  ApiError from "./apiError.js";
+import ApiError from "./apiError.js";
 
 const leetcode_API_URL = "https://leetcode.com/graphql";
 
@@ -30,20 +30,22 @@ const validateLeetCodeUsernameAndGetInfo = async (username) => {
     const user = response.data.data.matchedUser;
 
     if (!user) {
-      throw new ApiError(404, "Invalid LeetCode username. Please provide a correct one.");
+      throw new ApiError(
+        404,
+        "Invalid LeetCode username. Please provide a correct one."
+      );
     }
 
     return {
       username: user.username,
       fullName: user.profile.realName || "No Name Provided",
       userAvatar: user.profile.userAvatar || "",
-      aboutMe : user.profile.aboutMe || "",
-      school : user.profile.school || "",
-      countryName : user.profile.countryName || "",
-      company : user.profile.company || "",
-      jobTitle : user.profile.jobTitle || "",
+      aboutMe: user.profile.aboutMe || "",
+      school: user.profile.school || "",
+      countryName: user.profile.countryName || "",
+      company: user.profile.company || "",
+      jobTitle: user.profile.jobTitle || "",
     };
-
   } catch (error) {
     console.error("Error validating LeetCode username:", error.message);
     throw new ApiError(500, "Error validating LeetCode username");

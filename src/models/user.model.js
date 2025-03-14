@@ -1,74 +1,40 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { Platform }from "./index.js"
+
+
+const platformSchema = new mongoose.Schema({
+    name: { type: String, required: true }, // "LeetCode", "Codeforces", etc.
+    username: { type: String, required: true },
+    rating: { type: Number, default: 0 },
+    totalSolved: { type: Number, default: 0 },
+    problems: {
+        easy: { type: Number, default: 0 },
+        medium: { type: Number, default: 0 },
+        hard: { type: Number, default: 0 }
+    }
+}, { _id: false });
 
 const userSchema = new mongoose.Schema({
-    fullName: {
-        type: String,
-        required: true,
-        trim : true,
-    },
-    username: {
-        //by default I will take Leetcode username
-        type: String,
-        unique: true,
-        required : true,
-        trim : true,
-        lowercase : true
+    fullName: { type: String, required: true, trim: true },
+    username: { type: String, unique: true, required: true, trim: true, lowercase: true }, // Default to LeetCode username
+    gfgusername: { type: String, unique: true, default: "", trim: true, lowercase: true },
+    codeforcesusername: { type: String, unique: true, default : "", trim: true, lowercase: true },
+    email: { type: String, unique: true, required: true, lowercase: true, trim: true },
+    password: { type: String, required: true },
+    role: { type: String, default: "user", enum: ["user", "admin"] },
+    avatar: { type: String, default: "" },
+    aboutMe: { type: String, default: "" },
+    school: { type: String, default: "" },
+    countryName: { type: String, default: "" },
+    company: { type: String, default: "" },
+    jobTitle: { type: String, default: "" },
+    refreshToken: { type: String },
+    platforms: [platformSchema] 
+}, { timestamps: true }
+);
 
-    },
-    email: {
-        type: String,
-        unique: true,
-        required: true,
-        lowercase: true,
-        trim: true
-    },
-    password: {
-        type: String,
-        required: true
-    },
-    role: {
-        type: String,
-        default: "user",
-        enum : ["user", "admin"]
-    },
-    avatar: {
-        type: String,
-        default: ""
-    },
-    aboutMe: {
-        type: String,
-        default: ""
-    },
-    school: {
-        type: String,
-        default: ""
-    },
-    countryName: {
-        type: String,
-        default: ""
-    },
-    company: {
-        type: String,
-        default: ""
-    },
-    jobTitle: {
-        type: String,
-        default: ""
-    },
-    refreshToken : {
-        type : String
-    },
-    platforms : [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Platform"
-        }
-    ]
-}, {timestamps: true}
-); 
+
 
 
 userSchema.methods.isPasswordMatch = async function(enteredPassword){
@@ -81,7 +47,7 @@ userSchema.pre("save", async function(next){
     next();
 });
 
-userSchema.methods.generateAccessToken = async function(){
+userSchema.methods.generateAccessToken = function(){
     return jwt.sign({
         userId: this._id,
         email: this.email,
@@ -89,7 +55,7 @@ userSchema.methods.generateAccessToken = async function(){
         role: this.role
     }, process.env.JWT_ACCESS_SECRET, {expiresIn: process.env.ACCESS_TOKEN_EXPIRY});
 }   
-userSchema.methods.generateRefreshToken = async function(){
+userSchema.methods.generateRefreshToken = function(){
     return jwt.sign({
         userId: this._id,
     }, process.env.JWT_REFRESH_SECRET, {expiresIn: process.env.REFRESH_TOKEN_EXPIRY});
